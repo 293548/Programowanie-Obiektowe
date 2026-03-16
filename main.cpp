@@ -4,15 +4,22 @@
 #define N 10
 using namespace std;
 
-void dodajOsobe(int *tabIndex, string *tabImie, string *tabNazwisko, bool *tabObecnosc, int &licznik){
+struct Student{
+    int index;
+    string imie; 
+    string nazwisko;
+    bool obecnosc;
+};
+
+void dodajOsobe(Student *baza, int &licznik){
     if (licznik < N){
         cout << "Wpisz index: ";
-        cin >> tabIndex[licznik];
+        cin >> baza[licznik].index;
         cout << "Wpisz imie: ";
-        cin >> tabImie[licznik];
-        tabObecnosc[licznik] = 0;
+        cin >> baza[licznik].imie;
+        baza[licznik].obecnosc = 0;
         cout << "Wpisz nazwisko: ";
-        cin >> tabNazwisko[licznik];
+        cin >> baza[licznik].nazwisko;
         licznik++;
         //tabNazwisko.push_back;
     }
@@ -20,35 +27,35 @@ void dodajOsobe(int *tabIndex, string *tabImie, string *tabNazwisko, bool *tabOb
         cout << "Lista jest pelna, nie mozna dodac wiecej osob." << endl;
 }
 
-void ustawObecnosc(int *tabIndex, string *tabImie, string *tabNazwisko, bool *tabObecnosc, int licznik){
+void ustawObecnosc(Student *baza, int licznik){
     if (licznik != 0){
         for (int i = 0; i < licznik; i++){
-            cout << "Ustaw obecnosc dla " << tabIndex[i] << " " << tabImie[i] << " " << tabNazwisko[i] << ": ";
-            cin >> tabObecnosc[i];
+            cout << "Ustaw obecnosc dla " << baza[i].index << " " << baza[i].imie << " " << baza[i].nazwisko << ": ";
+            cin >> baza[i].obecnosc;
         }
     }
     else
         cout << "Lista jest pusta." << endl;
 }
 
-void zmienDane(int *tabIndex, string *tabImie, string *tabNazwisko, int licznik){
+void zmienDane(Student *baza, int licznik){
     int index, licznik1 = -1;
     if (licznik != 0){
         cout << "Wpisz index osoby dane ktorej chcesz zmienic: ";
         cin >> index;
         for (int i = 0; i < licznik; i++){
-            if (index == tabIndex[i]){
+            if (index == baza[i].index){
                 licznik1 = i;
                 break;
             }
         }
         if (licznik1 != -1){
             cout << "Wpisz nowy index: ";
-            cin >> tabIndex[licznik1];
+            cin >> baza[licznik1].index;
             cout << "Wpisz nowe imie: ";
-            cin >> tabImie[licznik1];
+            cin >> baza[licznik1].imie;
             cout << "Wpisz nowe nazwisko: ";
-            cin >> tabNazwisko[licznik1];
+            cin >> baza[licznik1].nazwisko;
         }
         else
             cout << "Nieprawidlowy index." << endl;
@@ -57,32 +64,28 @@ void zmienDane(int *tabIndex, string *tabImie, string *tabNazwisko, int licznik)
         cout << "Lista jest pusta." << endl;
 }
 
-void drukujListe(int *tabIndex, string *tabImie, string *tabNazwisko, bool *tabObecnosc, int licznik){
+void drukujListe(Student *baza, int licznik){
     if (licznik != 0)
         for (int i = 0; i < licznik; i++)
-            cout << i + 1 << ". " << tabIndex[i] << " " << tabImie[i] << " "  << tabNazwisko[i] << " - " << (tabObecnosc[i]==1?"obecny":"nie obecny") << endl;
+            cout << i + 1 << ". " << baza[i].index << " " << baza[i].imie << " "  << baza[i].nazwisko << " - " << (baza[i].obecnosc == 1 ? "obecny" : "nie obecny") << endl;
     else
         cout << "Lista jest pusta." << endl;
 }
 
-void usunOsobe(int *tabIndex, string *tabImie, string *tabNazwisko, bool *tabObecnosc, int &licznik){
+void usunOsobe(Student *baza, int &licznik){
     int index, licznik1 = -1;
     if (licznik != 0){
         cout << "Wpisz index osoby ktora chcesz usunac: ";
         cin >> index;
         for (int i = 0; i < licznik; i++){
-            if (index == tabIndex[i]){
+            if (index == baza[i].index){
                 licznik1 = i;
                 break;
             }
         }
         if (licznik1 != -1){
-            for (int i = licznik1; i < licznik - 1; i++){
-                tabIndex[i] = tabIndex[i + 1];
-                tabImie[i] = tabImie[i + 1];
-                tabNazwisko[i] = tabNazwisko[i + 1];
-                tabObecnosc[i] = tabObecnosc[i + 1];
-            }
+            for (int i = licznik1; i < licznik - 1; i++)
+                baza[i] = baza[i + 1];
             licznik--;
         }
         else
@@ -108,9 +111,7 @@ void menu(int &wybor){
 
 int main(){
     int wybor, licznik = 0;
-    int tabIndex[N];
-    string tabImie[N], tabNazwisko[N];
-    bool tabObecnosc[N];
+    Student baza[N];
     //vector<string> tabNazwisko;
     //vector<bool> tabObecnosc;
     
@@ -119,19 +120,19 @@ int main(){
 
         switch (wybor){
             case 1:
-                dodajOsobe(tabIndex, tabImie, tabNazwisko, tabObecnosc, licznik);
+                dodajOsobe(baza, licznik);
                 break;
             case 2:
-                ustawObecnosc(tabIndex, tabImie, tabNazwisko, tabObecnosc, licznik);
+                ustawObecnosc(baza, licznik);
                 break;
             case 3:
-                zmienDane(tabIndex, tabImie, tabNazwisko, licznik);
+                zmienDane(baza, licznik);
                 break;
             case 4:
-                drukujListe(tabIndex, tabImie, tabNazwisko, tabObecnosc, licznik);
+                drukujListe(baza, licznik);
                 break;
             case 5:
-                usunOsobe(tabIndex, tabImie, tabNazwisko, tabObecnosc, licznik);
+                usunOsobe(baza, licznik);
                 break;
             case 0: 
                 return 0;
