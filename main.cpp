@@ -11,25 +11,27 @@ struct Student{
     bool obecnosc;
 };
 
-void dodajOsobe(Student *baza, int &licznik){
-    if (licznik < N){
+void dodajOsobe(vector<Student> &baza){
+    if (baza.size() < N){
+        Student nowaOsoba;
+
         cout << "Wpisz index: ";
-        cin >> baza[licznik].index;
+        cin >> nowaOsoba.index;
         cout << "Wpisz imie: ";
-        cin >> baza[licznik].imie;
-        baza[licznik].obecnosc = 0;
+        cin >> nowaOsoba.imie;
+        nowaOsoba.obecnosc = 0;
         cout << "Wpisz nazwisko: ";
-        cin >> baza[licznik].nazwisko;
-        licznik++;
-        //tabNazwisko.push_back;
+        cin >> nowaOsoba.nazwisko;
+
+        baza.push_back(nowaOsoba);
     }
     else
         cout << "Lista jest pelna, nie mozna dodac wiecej osob." << endl;
 }
 
-void ustawObecnosc(Student *baza, int licznik){
-    if (licznik != 0){
-        for (int i = 0; i < licznik; i++){
+void ustawObecnosc(vector<Student> &baza){
+    if (baza.size() != 0){
+        for (int i = 0; i < baza.size(); i++){
             cout << "Ustaw obecnosc dla " << baza[i].index << " " << baza[i].imie << " " << baza[i].nazwisko << ": ";
             cin >> baza[i].obecnosc;
         }
@@ -38,12 +40,13 @@ void ustawObecnosc(Student *baza, int licznik){
         cout << "Lista jest pusta." << endl;
 }
 
-void zmienDane(Student *baza, int licznik){
+void zmienDane(vector<Student> &baza){
     int index, licznik1 = -1;
-    if (licznik != 0){
+
+    if (baza.size() != 0){
         cout << "Wpisz index osoby dane ktorej chcesz zmienic: ";
         cin >> index;
-        for (int i = 0; i < licznik; i++){
+        for (int i = 0; i < baza.size(); i++){
             if (index == baza[i].index){
                 licznik1 = i;
                 break;
@@ -64,29 +67,30 @@ void zmienDane(Student *baza, int licznik){
         cout << "Lista jest pusta." << endl;
 }
 
-void drukujListe(Student *baza, int licznik){
-    if (licznik != 0)
-        for (int i = 0; i < licznik; i++)
+void drukujListe(vector<Student> &baza){
+    if (baza.size() != 0)
+        for (int i = 0; i < baza.size(); i++)
             cout << i + 1 << ". " << baza[i].index << " " << baza[i].imie << " "  << baza[i].nazwisko << " - " << (baza[i].obecnosc == 1 ? "obecny" : "nie obecny") << endl;
     else
         cout << "Lista jest pusta." << endl;
 }
 
-void usunOsobe(Student *baza, int &licznik){
+void usunOsobe(vector<Student> &baza){
     int index, licznik1 = -1;
-    if (licznik != 0){
+
+    if (baza.size() != 0){
         cout << "Wpisz index osoby ktora chcesz usunac: ";
         cin >> index;
-        for (int i = 0; i < licznik; i++){
+        for (int i = 0; i < baza.size(); i++){
             if (index == baza[i].index){
                 licznik1 = i;
                 break;
             }
         }
         if (licznik1 != -1){
-            for (int i = licznik1; i < licznik - 1; i++)
+            for (int i = licznik1; i < baza.size() - 1; i++)
                 baza[i] = baza[i + 1];
-            licznik--;
+            baza.pop_back();
         }
         else
             cout << "Nieprawidlowy index." << endl;
@@ -110,29 +114,27 @@ void menu(int &wybor){
 }
 
 int main(){
-    int wybor, licznik = 0;
-    Student baza[N];
-    //vector<string> tabNazwisko;
-    //vector<bool> tabObecnosc;
+    int wybor;
+    vector<Student> baza;
     
     while (1){
         menu(wybor);
 
         switch (wybor){
             case 1:
-                dodajOsobe(baza, licznik);
+                dodajOsobe(baza);
                 break;
             case 2:
-                ustawObecnosc(baza, licznik);
+                ustawObecnosc(baza);
                 break;
             case 3:
-                zmienDane(baza, licznik);
+                zmienDane(baza);
                 break;
             case 4:
-                drukujListe(baza, licznik);
+                drukujListe(baza);
                 break;
             case 5:
-                usunOsobe(baza, licznik);
+                usunOsobe(baza);
                 break;
             case 0: 
                 return 0;
