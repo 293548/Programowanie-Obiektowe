@@ -1,39 +1,116 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include <cctype>
+#include <iomanip>
 #define N 10
 using namespace std;
 
-struct Student{
-    int index;
-    string imie; 
-    string nazwisko;
-    bool obecnosc;
+class Student{
+    private:
+        int index;
+        string imie;
+        string nazwisko;
+    public:
+        //void setline(int, string, string, vector<Student>);
+        //void getline(int, string, string, vector<Student>);
+        bool setIndex(int);
+        bool setImie(string);
+        bool setNazwisko(string);
+        int getIndex();
+        string getImie();
+        string getNazwisko();
 };
 
-void dodajOsobe(vector<Student> &baza){
+// void Student::setline(int index, string imie, string nazwisko, vector<Student> &baza){
+//     if (index);
+//         index
+//     else
+//         baza.
+//     if (imie);
+//     if (nazwisko);
+// }
+
+// void Student::getline(int index, string imie, string nazwisko, vector<Student> &baza){
+
+
+
+// }
+
+bool Student::setIndex(int nowyIndex){
+    if (nowyIndex >= 0 && nowyIndex <= 999999){
+        index = nowyIndex;
+        return 1;
+    }
+    return 0;
+}
+bool Student::setImie(string noweImie){
+    for (int i = 0; i < noweImie.length(); i++){
+        if (!isalpha(noweImie[i]))
+            return 0;
+    }
+    imie = noweImie;
+    return 1;
+}
+bool Student::setNazwisko(string noweNazwisko){
+    for (int i = 0; i < noweNazwisko.length(); i++){
+        if (!isalpha(noweNazwisko[i]))
+            return 0;
+    }
+    nazwisko = noweNazwisko;
+    return 1;
+}
+int Student::getIndex(){
+    return index;
+}
+string Student::getImie(){
+    return imie;
+}
+string Student::getNazwisko(){
+    return nazwisko;
+}
+
+void dodajOsobe(vector<Student> &baza, vector<bool> &obecnosc){
     if (baza.size() < N){
         Student nowaOsoba;
+        int tymczasowyIndex;
+        string tymczasoweImie, tymczasoweNazwisko;
 
-        cout << "Wpisz index: ";
-        cin >> nowaOsoba.index;
-        cout << "Wpisz imie: ";
-        cin >> nowaOsoba.imie;
-        nowaOsoba.obecnosc = 0;
-        cout << "Wpisz nazwisko: ";
-        cin >> nowaOsoba.nazwisko;
+        do{
+            cout << "Wpisz index: ";
+            cin >> tymczasowyIndex;
+        }
+        while 
+            (nowaOsoba.setIndex(tymczasowyIndex) == 0);
+
+        do{
+            cout << "Wpisz imie: ";
+            cin >> tymczasoweImie;
+        }
+        while
+            (nowaOsoba.setImie(tymczasoweImie) == 0);
+
+        do{
+            cout << "Wpisz nazwisko: ";
+            cin >> tymczasoweNazwisko;
+        }
+        while 
+            (nowaOsoba.setNazwisko(tymczasoweNazwisko) == 0);
 
         baza.push_back(nowaOsoba);
+        obecnosc.push_back(0);
     }
     else
         cout << "Lista jest pelna, nie mozna dodac wiecej osob." << endl;
 }
 
-void ustawObecnosc(vector<Student> &baza){
+void ustawObecnosc(vector<Student> &baza, vector<bool> &obecnosc){
+    bool tymczasowaObecnosc;
     if (baza.size() != 0){
         for (int i = 0; i < baza.size(); i++){
-            cout << "Ustaw obecnosc dla " << baza[i].index << " " << baza[i].imie << " " << baza[i].nazwisko << ": ";
-            cin >> baza[i].obecnosc;
+            cout << "Ustaw obecnosc dla " << setfill('0') << setw(6) << baza[i].getIndex() << " " << baza[i].getImie() << " " << baza[i].getNazwisko() << ": ";
+            cin >> tymczasowaObecnosc;
+            obecnosc[i] = tymczasowaObecnosc;
         }
     }
     else
@@ -41,24 +118,40 @@ void ustawObecnosc(vector<Student> &baza){
 }
 
 void zmienDane(vector<Student> &baza){
-    int index, licznik1 = -1;
+    int index, licznik1 = -1, tymczasowyIndex;
+    string tymczasoweImie, tymczasoweNazwisko;
 
     if (baza.size() != 0){
         cout << "Wpisz index osoby dane ktorej chcesz zmienic: ";
         cin >> index;
         for (int i = 0; i < baza.size(); i++){
-            if (index == baza[i].index){
+            if (index == baza[i].getIndex()){
                 licznik1 = i;
                 break;
             }
         }
         if (licznik1 != -1){
-            cout << "Wpisz nowy index: ";
-            cin >> baza[licznik1].index;
-            cout << "Wpisz nowe imie: ";
-            cin >> baza[licznik1].imie;
-            cout << "Wpisz nowe nazwisko: ";
-            cin >> baza[licznik1].nazwisko;
+
+            do{
+                cout << "Wpisz nowy index: ";
+                cin >> tymczasowyIndex;
+            }
+            while 
+                (baza[licznik1].setIndex(tymczasowyIndex) == 0);
+            
+            do{
+                cout << "Wpisz nowe imie: ";
+                cin >> tymczasoweImie;
+            }
+            while
+                (baza[licznik1].setImie(tymczasoweImie) == 0);
+
+            do{
+                cout << "Wpisz nowe nazwisko: ";
+                cin >> tymczasoweNazwisko;
+            }
+            while
+                (baza[licznik1].setNazwisko(tymczasoweNazwisko) == 0);
         }
         else
             cout << "Nieprawidlowy index." << endl;
@@ -67,22 +160,22 @@ void zmienDane(vector<Student> &baza){
         cout << "Lista jest pusta." << endl;
 }
 
-void drukujListe(vector<Student> &baza){
+void drukujListe(vector<Student> &baza, vector<bool> &obecnosc){
     if (baza.size() != 0)
         for (int i = 0; i < baza.size(); i++)
-            cout << i + 1 << ". " << baza[i].index << " " << baza[i].imie << " "  << baza[i].nazwisko << " - " << (baza[i].obecnosc == 1 ? "obecny" : "nie obecny") << endl;
+            cout << i + 1 << ". " << setfill('0') << setw(6) << baza[i].getIndex() << " " << baza[i].getImie() << " "  << baza[i].getNazwisko() << " - " << (obecnosc[i] == 1 ? "obecny" : "nie obecny") << endl;
     else
         cout << "Lista jest pusta." << endl;
 }
 
-void usunOsobe(vector<Student> &baza){
+void usunOsobe(vector<Student> &baza, vector<bool> &obecnosc){
     int index, licznik1 = -1;
 
     if (baza.size() != 0){
         cout << "Wpisz index osoby ktora chcesz usunac: ";
         cin >> index;
         for (int i = 0; i < baza.size(); i++){
-            if (index == baza[i].index){
+            if (index == baza[i].getIndex()){
                 licznik1 = i;
                 break;
             }
@@ -91,6 +184,7 @@ void usunOsobe(vector<Student> &baza){
             for (int i = licznik1; i < baza.size() - 1; i++)
                 baza[i] = baza[i + 1];
             baza.pop_back();
+            obecnosc.pop_back();
         }
         else
             cout << "Nieprawidlowy index." << endl;
@@ -116,25 +210,26 @@ void menu(int &wybor){
 int main(){
     int wybor;
     vector<Student> baza;
+    vector<bool> obecnosc; 
     
     while (1){
         menu(wybor);
 
         switch (wybor){
             case 1:
-                dodajOsobe(baza);
+                dodajOsobe(baza, obecnosc);
                 break;
             case 2:
-                ustawObecnosc(baza);
+                ustawObecnosc(baza, obecnosc);
                 break;
             case 3:
                 zmienDane(baza);
                 break;
             case 4:
-                drukujListe(baza);
+                drukujListe(baza, obecnosc);
                 break;
             case 5:
-                usunOsobe(baza);
+                usunOsobe(baza, obecnosc);
                 break;
             case 0: 
                 return 0;
