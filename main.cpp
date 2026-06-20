@@ -70,8 +70,8 @@ string Student::getNazwisko(){
     return nazwisko;
 }
 
-void dodajOsobe(vector<Student> *baza, vector<bool> *obecnosc){
-    if (baza->size() < N){
+void dodajOsobe(Student *baza, bool *obecnosc, int &licznik){
+    if (licznik < N){
         Student nowaOsoba;
         int tymczasowyIndex;
         string tymczasoweImie, tymczasoweNazwisko;
@@ -96,36 +96,37 @@ void dodajOsobe(vector<Student> *baza, vector<bool> *obecnosc){
         }
         while 
             (nowaOsoba.setNazwisko(tymczasoweNazwisko) == 0);
-
-        baza->push_back(nowaOsoba);
-        obecnosc->push_back(0);
+        
+        baza[licznik] = nowaOsoba;
+        obecnosc[licznik] = 0;
+        licznik++;
     }
     else
         cout << "Lista jest pelna, nie mozna dodac wiecej osob." << endl;
 }
 
-void ustawObecnosc(vector<Student> *baza, vector<bool> *obecnosc){
+void ustawObecnosc(Student *baza, bool *obecnosc, int &licznik){
     bool tymczasowaObecnosc;
-    if (baza->size() != 0){
-        for (int i = 0; i < baza->size(); i++){
-            cout << "Ustaw obecnosc dla " << setfill('0') << setw(6) << baza->at(i).getIndex() << " " << baza->at(i).getImie() << " " << baza->at(i).getNazwisko() << ": ";
+    if (licznik != 0){
+        for (int i = 0; i < licznik; i++){
+            cout << "Ustaw obecnosc dla " << setfill('0') << setw(6) << baza[i].getIndex() << " " << baza[i].getImie() << " " << baza[i].getNazwisko() << ": ";
             cin >> tymczasowaObecnosc;
-            obecnosc->at(i) = tymczasowaObecnosc;
+            obecnosc[i] = tymczasowaObecnosc;
         }
     }
     else
         cout << "Lista jest pusta." << endl;
 }
 
-void zmienDane(vector<Student> *baza){
+void zmienDane(Student *baza, int &licznik){
     int index, licznik1 = -1, tymczasowyIndex;
     string tymczasoweImie, tymczasoweNazwisko;
 
-    if (baza->size() != 0){
+    if (licznik != 0){
         cout << "Wpisz index osoby dane ktorej chcesz zmienic: ";
         cin >> index;
-        for (int i = 0; i < baza->size(); i++){
-            if (index == baza->at(i).getIndex()){
+        for (int i = 0; i < licznik; i++){
+            if (index == baza[i].getIndex()){
                 licznik1 = i;
                 break;
             }
@@ -137,21 +138,21 @@ void zmienDane(vector<Student> *baza){
                 cin >> tymczasowyIndex;
             }
             while 
-                (baza->at(licznik1).setIndex(tymczasowyIndex) == 0);
+                (baza[licznik1].setIndex(tymczasowyIndex) == 0);
             
             do{
                 cout << "Wpisz nowe imie: ";
                 cin >> tymczasoweImie;
             }
             while
-                (baza->at(licznik1).setImie(tymczasoweImie) == 0);
+                (baza[licznik1].setImie(tymczasoweImie) == 0);
 
             do{
                 cout << "Wpisz nowe nazwisko: ";
                 cin >> tymczasoweNazwisko;
             }
             while
-                (baza->at(licznik1).setNazwisko(tymczasoweNazwisko) == 0);
+                (baza[licznik1].setNazwisko(tymczasoweNazwisko) == 0);
         }
         else
             cout << "Nieprawidlowy index." << endl;
@@ -160,34 +161,34 @@ void zmienDane(vector<Student> *baza){
         cout << "Lista jest pusta." << endl;
 }
 
-void drukujListe(vector<Student> *baza, vector<bool> *obecnosc){
-    if (baza->size() != 0)
-        for (int i = 0; i < baza->size(); i++)
-            cout << i + 1 << ". " << setfill('0') << setw(6) << baza->at(i).getIndex() << " " << baza->at(i).getImie() << " "  << baza->at(i).getNazwisko() << " - " << (obecnosc->at(i) == 1 ? "obecny" : "nie obecny") << endl;
+void drukujListe(Student *baza, bool *obecnosc, int &licznik){
+    if (licznik != 0)
+        for (int i = 0; i < licznik; i++)
+            cout << i + 1 << ". " << setfill('0') << setw(6) << baza[i].getIndex() << " " << baza[i].getImie() << " "  << baza[i].getNazwisko() << " - " << (obecnosc[i] == 1 ? "obecny" : "nie obecny") << endl;
     else
         cout << "Lista jest pusta." << endl;
 }
 
-void usunOsobe(vector<Student> *baza, vector<bool> *obecnosc){
+void usunOsobe(Student *baza, bool *obecnosc, int &licznik){
     int index, licznik1 = -1;
 
-    if (baza->size() != 0){
+    if (licznik != 0){
         cout << "Wpisz index osoby ktora chcesz usunac: ";
         cin >> index;
-        for (int i = 0; i < baza->size(); i++){
-            if (index == baza->at(i).getIndex()){
+        for (int i = 0; i < licznik; i++){
+            if (index == baza[i].getIndex()){
                 licznik1 = i;
                 break;
             }
         }
         if (licznik1 != -1){
-            for (int i = licznik1; i < baza->size() - 1; i++)
-                baza->at(i) = baza->at(i + 1);
-            baza->pop_back();
+            for (int i = licznik1; i < licznik - 1; i++)
+                baza[i] = baza[i + 1];
 
-            for (int i = licznik1; i < obecnosc->size() - 1; i++)
-                obecnosc->at(i) = obecnosc->at(i + 1);
-            obecnosc->pop_back();
+            for (int i = licznik1; i < licznik - 1; i++)
+                obecnosc[i] = obecnosc[i + 1];
+
+            licznik--;
         }
         else
             cout << "Nieprawidlowy index." << endl;
@@ -211,28 +212,28 @@ void menu(int &wybor){
 }
 
 int main(){
-    int wybor;
-    vector<Student> baza;
-    vector<bool> obecnosc; 
+    int wybor, licznik = 0;
+    Student baza[N];
+    bool obecnosc[N]; 
     
     while (1){
         menu(wybor);
 
         switch (wybor){
             case 1:
-                dodajOsobe(&baza, &obecnosc);
+                dodajOsobe(baza, obecnosc, licznik);
                 break;
             case 2:
-                ustawObecnosc(&baza, &obecnosc);
+                ustawObecnosc(baza, obecnosc, licznik);
                 break;
             case 3:
-                zmienDane(&baza);
+                zmienDane(baza, licznik);
                 break;
             case 4:
-                drukujListe(&baza, &obecnosc);
+                drukujListe(baza, obecnosc, licznik);
                 break;
             case 5:
-                usunOsobe(&baza, &obecnosc);
+                usunOsobe(baza, obecnosc, licznik);
                 break;
             case 0: 
                 return 0;
