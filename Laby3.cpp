@@ -41,11 +41,8 @@ class ListaObecnosci{
 class Interfejs{
     private:
         int wybor;
-        ListaObecnosci *listaAktywna;
-        ListaObecnosci Analiza1;
-        ListaObecnosci PPO;
+        ListaObecnosci dziennik;
     public:
-        void wybierzListe();
         void menu();
         int uruchom();
 };
@@ -215,27 +212,6 @@ void ListaObecnosci::usunOsobe(){
         cout << "Lista jest pusta." << endl;
 }
 
-void Interfejs::wybierzListe(){
-    int wybor;
-
-    cout << "1. Analiza 1." << endl;
-    cout << "2. PPO." << endl;
-    cout << "Wpisz numer listy z ktora chcesz dzialac: ";
-    cin >> wybor;
-
-    switch (wybor){
-            case 1:
-                listaAktywna = &Analiza1;
-                break;
-            case 2:
-                listaAktywna = &PPO;
-                break;
-            default:
-                cout << "Wystapil blad!" << endl;
-                break;
-    }
-}
-
 void Interfejs::menu(){
     cout << endl;
     cout << "========MENU========" << endl;
@@ -244,7 +220,6 @@ void Interfejs::menu(){
     cout << "3. Zmienic dane." << endl;
     cout << "4. Drukowac liste." << endl;
     cout << "5. Usunac osobe." << endl;
-    cout << "6. Zmien liste." << endl;
     cout << "0. Zakoncz program." << endl;
     cout << "Twoj wybor: ";
     cin >> wybor;
@@ -252,29 +227,24 @@ void Interfejs::menu(){
 }
 
 int Interfejs::uruchom(){
-    listaAktywna = &Analiza1;
-
     while (1){
         menu();
 
         switch (wybor){
             case 1:
-                listaAktywna->dodajOsobe();
+                dziennik.dodajOsobe();
                 break;
             case 2:
-                listaAktywna->ustawObecnosc();
+                dziennik.ustawObecnosc();
                 break;
             case 3:
-                listaAktywna->zmienDane();
+                dziennik.zmienDane();
                 break;
             case 4:
-                listaAktywna->drukujListe();
+                dziennik.drukujListe();
                 break;
             case 5:
-                listaAktywna->usunOsobe();
-                break;
-            case 6:
-                wybierzListe();
+                dziennik.usunOsobe();
                 break;
             case 0: 
                 return 0;
