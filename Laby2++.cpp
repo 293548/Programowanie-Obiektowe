@@ -8,46 +8,58 @@ using namespace std;
 
 class Student{
     private:
-        int index = -1;
+        int index;
         string imie;
         string nazwisko;
     public:
-        void setIndex(int);
-        void setImie(string);
-        void setNazwisko(string);
+        //void setline(int, string, string, vector<Student>);
+        //void getline(int, string, string, vector<Student>);
+        bool setIndex(int);
+        bool setImie(string);
+        bool setNazwisko(string);
         int getIndex();
         string getImie();
         string getNazwisko();
 };
 
-void Student::setIndex(int nowyIndex){
+// void Student::setline(int index, string imie, string nazwisko, vector<Student> &baza){
+//     if (index);
+//         index
+//     else
+//         baza.
+//     if (imie);
+//     if (nazwisko);
+// }
+
+// void Student::getline(int index, string imie, string nazwisko, vector<Student> &baza){
+
+
+
+// }
+
+bool Student::setIndex(int nowyIndex){
     if (nowyIndex >= 0 && nowyIndex <= 999999){
         index = nowyIndex;
+        return 1;
     }
+    return 0;
 }
-void Student::setImie(string noweImie){
-    bool prawidloweImie = 1;
+bool Student::setImie(string noweImie){
     for (int i = 0; i < noweImie.length(); i++){
-        if (!isalpha(noweImie[i])){
-            prawidloweImie = 0;
-            break;
-        }
+        if (!isalpha(noweImie[i]))
+            return 0;
     }
-    if (prawidloweImie)
-        imie = noweImie;
+    imie = noweImie;
+    return 1;
 }
-void Student::setNazwisko(string noweNazwisko){
-    bool prawidloweNazwisko = 1;
+bool Student::setNazwisko(string noweNazwisko){
     for (int i = 0; i < noweNazwisko.length(); i++){
-        if (!isalpha(noweNazwisko[i])){
-            prawidloweNazwisko = 0;
-            break;
-        }
+        if (!isalpha(noweNazwisko[i]))
+            return 0;
     }
-    if (prawidloweNazwisko)
-        nazwisko = noweNazwisko;
+    nazwisko = noweNazwisko;
+    return 1;
 }
-
 int Student::getIndex(){
     return index;
 }
@@ -61,29 +73,29 @@ string Student::getNazwisko(){
 void dodajOsobe(Student *baza, bool *obecnosc, int &licznik){
     if (licznik < N){
         Student nowaOsoba;
-        int tymczasowyIndex = -1;
+        int tymczasowyIndex;
         string tymczasoweImie, tymczasoweNazwisko;
 
         do{
             cout << "Wpisz index: ";
             cin >> tymczasowyIndex;
-            nowaOsoba.setIndex(tymczasowyIndex);
         }
-        while (nowaOsoba.getIndex() == -1);
+        while 
+            (nowaOsoba.setIndex(tymczasowyIndex) == 0);
 
         do{
             cout << "Wpisz imie: ";
             cin >> tymczasoweImie;
-            nowaOsoba.setImie(tymczasoweImie);
         }
-        while (nowaOsoba.getImie() == "");
+        while
+            (nowaOsoba.setImie(tymczasoweImie) == 0);
 
         do{
             cout << "Wpisz nazwisko: ";
             cin >> tymczasoweNazwisko;
-            nowaOsoba.setNazwisko(tymczasoweNazwisko);
         }
-        while (nowaOsoba.getNazwisko() == "");
+        while 
+            (nowaOsoba.setNazwisko(tymczasoweNazwisko) == 0);
         
         baza[licznik] = nowaOsoba;
         obecnosc[licznik] = 0;
@@ -107,7 +119,7 @@ void ustawObecnosc(Student *baza, bool *obecnosc, int &licznik){
 }
 
 void zmienDane(Student *baza, int &licznik){
-    int index, licznik1 = -1, tymczasowyIndex = -1;
+    int index, licznik1 = -1, tymczasowyIndex;
     string tymczasoweImie, tymczasoweNazwisko;
 
     if (licznik != 0){
@@ -124,23 +136,23 @@ void zmienDane(Student *baza, int &licznik){
             do{
                 cout << "Wpisz nowy index: ";
                 cin >> tymczasowyIndex;
-                baza[licznik1].setIndex(tymczasowyIndex);
             }
-            while (baza[licznik1].getIndex() == -1);
+            while 
+                (baza[licznik1].setIndex(tymczasowyIndex) == 0);
             
             do{
                 cout << "Wpisz nowe imie: ";
                 cin >> tymczasoweImie;
-                baza[licznik1].setImie(tymczasoweImie);
             }
-            while (baza[licznik1].getImie() == "");
+            while
+                (baza[licznik1].setImie(tymczasoweImie) == 0);
 
             do{
                 cout << "Wpisz nowe nazwisko: ";
                 cin >> tymczasoweNazwisko;
-                baza[licznik1].setNazwisko(tymczasoweNazwisko);
             }
-            while (baza[licznik1].getNazwisko() == "");
+            while
+                (baza[licznik1].setNazwisko(tymczasoweNazwisko) == 0);
         }
         else
             cout << "Nieprawidlowy index." << endl;
