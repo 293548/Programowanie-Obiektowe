@@ -6,18 +6,45 @@
 #define N 10
 using namespace std;
 
-class Student{
+class Osoba{
     private:
-        int index = -1;
         string imie;
         string nazwisko;
     public:
-        void setIndex(int);
         void setImie(string);
         void setNazwisko(string);
-        int getIndex();
         string getImie();
         string getNazwisko();
+};
+
+class Student : public Osoba{
+    private:
+        int index = -1;
+    public:
+        void setIndex(int);
+        int getIndex();
+};
+
+class ListaObecnosci{
+    private:
+        int licznik = 0;
+        Student baza[N];
+        bool obecnosc[N]; 
+    public:
+        void dodajOsobe();
+        void ustawObecnosc();
+        void zmienDane();
+        void drukujListe();
+        void usunOsobe();
+};
+
+class Interfejs{
+    private:
+        int wybor;
+        ListaObecnosci dziennik;
+    public:
+        void menu();
+        int uruchom();
 };
 
 void Student::setIndex(int nowyIndex){
@@ -25,7 +52,7 @@ void Student::setIndex(int nowyIndex){
         index = nowyIndex;
     }
 }
-void Student::setImie(string noweImie){
+void Osoba::setImie(string noweImie){
     bool prawidloweImie = 1;
     for (int i = 0; i < noweImie.length(); i++){
         if (!isalpha(noweImie[i])){
@@ -36,7 +63,7 @@ void Student::setImie(string noweImie){
     if (prawidloweImie)
         imie = noweImie;
 }
-void Student::setNazwisko(string noweNazwisko){
+void Osoba::setNazwisko(string noweNazwisko){
     bool prawidloweNazwisko = 1;
     for (int i = 0; i < noweNazwisko.length(); i++){
         if (!isalpha(noweNazwisko[i])){
@@ -51,41 +78,41 @@ void Student::setNazwisko(string noweNazwisko){
 int Student::getIndex(){
     return index;
 }
-string Student::getImie(){
+string Osoba::getImie(){
     return imie;
 }
-string Student::getNazwisko(){
+string Osoba::getNazwisko(){
     return nazwisko;
 }
 
-void dodajOsobe(Student *baza, bool *obecnosc, int &licznik){
+void ListaObecnosci::dodajOsobe(){
     if (licznik < N){
-        Student nowaOsoba;
+        Student nowyStudent;
         int tymczasowyIndex = -1;
         string tymczasoweImie, tymczasoweNazwisko;
 
         do{
             cout << "Wpisz index: ";
             cin >> tymczasowyIndex;
-            nowaOsoba.setIndex(tymczasowyIndex);
+            nowyStudent.setIndex(tymczasowyIndex);
         }
-        while (nowaOsoba.getIndex() == -1);
+        while (nowyStudent.getIndex() == -1);
 
         do{
             cout << "Wpisz imie: ";
             cin >> tymczasoweImie;
-            nowaOsoba.setImie(tymczasoweImie);
+            nowyStudent.setImie(tymczasoweImie);
         }
-        while (nowaOsoba.getImie() == "");
+        while (nowyStudent.getImie() == "");
 
         do{
             cout << "Wpisz nazwisko: ";
             cin >> tymczasoweNazwisko;
-            nowaOsoba.setNazwisko(tymczasoweNazwisko);
+            nowyStudent.setNazwisko(tymczasoweNazwisko);
         }
-        while (nowaOsoba.getNazwisko() == "");
+        while (nowyStudent.getNazwisko() == "");
         
-        baza[licznik] = nowaOsoba;
+        baza[licznik] = nowyStudent;
         obecnosc[licznik] = 0;
         licznik++;
     }
@@ -93,7 +120,7 @@ void dodajOsobe(Student *baza, bool *obecnosc, int &licznik){
         cout << "Lista jest pelna, nie mozna dodac wiecej osob." << endl;
 }
 
-void ustawObecnosc(Student *baza, bool *obecnosc, int &licznik){
+void ListaObecnosci::ustawObecnosc(){
     bool tymczasowaObecnosc;
     if (licznik != 0){
         for (int i = 0; i < licznik; i++){
@@ -106,7 +133,7 @@ void ustawObecnosc(Student *baza, bool *obecnosc, int &licznik){
         cout << "Lista jest pusta." << endl;
 }
 
-void zmienDane(Student *baza, int &licznik){
+void ListaObecnosci::zmienDane(){
     int index, licznik1 = -1, tymczasowyIndex = -1;
     string tymczasoweImie, tymczasoweNazwisko;
 
@@ -149,7 +176,7 @@ void zmienDane(Student *baza, int &licznik){
         cout << "Lista jest pusta." << endl;
 }
 
-void drukujListe(Student *baza, bool *obecnosc, int &licznik){
+void ListaObecnosci::drukujListe(){
     if (licznik != 0)
         for (int i = 0; i < licznik; i++)
             cout << i + 1 << ". " << setfill('0') << setw(6) << baza[i].getIndex() << " " << baza[i].getImie() << " "  << baza[i].getNazwisko() << " - " << (obecnosc[i] == 1 ? "obecny" : "nie obecny") << endl;
@@ -157,7 +184,7 @@ void drukujListe(Student *baza, bool *obecnosc, int &licznik){
         cout << "Lista jest pusta." << endl;
 }
 
-void usunOsobe(Student *baza, bool *obecnosc, int &licznik){
+void ListaObecnosci::usunOsobe(){
     int index, licznik1 = -1;
 
     if (licznik != 0){
@@ -185,7 +212,7 @@ void usunOsobe(Student *baza, bool *obecnosc, int &licznik){
         cout << "Lista jest pusta." << endl;
 }
 
-void menu(int &wybor){
+void Interfejs::menu(){
     cout << endl;
     cout << "========MENU========" << endl;
     cout << "1. Dodac osobe." << endl;
@@ -199,29 +226,25 @@ void menu(int &wybor){
     cout << endl;
 }
 
-int main(){
-    int wybor, licznik = 0;
-    Student baza[N];
-    bool obecnosc[N]; 
-    
+int Interfejs::uruchom(){
     while (1){
-        menu(wybor);
+        menu();
 
         switch (wybor){
             case 1:
-                dodajOsobe(baza, obecnosc, licznik);
+                dziennik.dodajOsobe();
                 break;
             case 2:
-                ustawObecnosc(baza, obecnosc, licznik);
+                dziennik.ustawObecnosc();
                 break;
             case 3:
-                zmienDane(baza, licznik);
+                dziennik.zmienDane();
                 break;
             case 4:
-                drukujListe(baza, obecnosc, licznik);
+                dziennik.drukujListe();
                 break;
             case 5:
-                usunOsobe(baza, obecnosc, licznik);
+                dziennik.usunOsobe();
                 break;
             case 0: 
                 return 0;
@@ -231,5 +254,12 @@ int main(){
                 break;
         }
     }
+}
+
+int main(){
+
+    Interfejs program;
+    program.uruchom();
+    
     return 0;
 }
