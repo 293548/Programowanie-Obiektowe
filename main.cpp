@@ -6,32 +6,56 @@
 #define N 10
 using namespace std;
 
+class IPrzedstawialny {
+    public:
+
+    virtual string przedstawSie() = 0;
+};
+
 class Osoba{
-    private:
+    protected:
         string imie;
         string nazwisko;
     public:
+        virtual ~Osoba() = default;
         void setImie(string);
         void setNazwisko(string);
         string getImie();
         string getNazwisko();
 };
 
-class Student : public Osoba{
+class Student : public Osoba, public IPrzedstawialny{
     private:
         int index = -1;
     public:
+    string przedstawSie() override {
+        return "STUDENT " + imie + " " + nazwisko; 
+    }
         void setIndex(int);
         int getIndex();
+};
+
+class Pracownik : public Osoba, public IPrzedstawialny{
+    private:
+        
+    public:
+    string przedstawSie() override {
+        return "PRACOWNIK " + imie + " " + nazwisko; 
+    }
 };
 
 class ListaObecnosci{
     private:
         int licznik = 0;
-        Student *baza[N];
+        Osoba *baza[N];
         bool obecnosc[N]; 
     public:
-        void dodajOsobe(Student*);
+        ~ListaObecnosci() {
+            for (int i = 0; i < licznik; i++) {
+                delete baza[i];
+            }
+        }
+        void dodajOsobe(Osoba*);
         void ustawObecnosc();
         void zmienDane();
         void drukujListe();
@@ -40,13 +64,12 @@ class ListaObecnosci{
 
 class Interfejs{
     private:
-        Student wszyscyStudenci[N];
-        int wybor, licznikStudentow = 0;
+        int wybor;
         ListaObecnosci *listaAktywna;
         ListaObecnosci Analiza1;
         ListaObecnosci PPO;
     public:
-        void wprowadzNowegoStudenta();
+        void wprowadzNowaOsobe();
         void wybierzListe();
         void menu();
         int uruchom();
@@ -90,38 +113,61 @@ string Osoba::getNazwisko(){
     return nazwisko;
 }
 
-void Interfejs::wprowadzNowegoStudenta(){
-        int tymczasowyIndex = -1;
+void Interfejs::wprowadzNowaOsobe(){
+        int tymczasowyIndex = -1, typ;
         string tymczasoweImie, tymczasoweNazwisko;
 
-        do{
-            cout << "Wpisz index: ";
-            cin >> tymczasowyIndex;
-            wszyscyStudenci[licznikStudentow].setIndex(tymczasowyIndex);
-        }
-        while (wszyscyStudenci[licznikStudentow].getIndex() == -1);
+        cout << "Kogo chcesz dodac? (1 - Student, 2 - Pracownik): ";
+        cin >> typ;
 
-        do{
-            cout << "Wpisz imie: ";
-            cin >> tymczasoweImie;
-            wszyscyStudenci[licznikStudentow].setImie(tymczasoweImie);
-        }
-        while (wszyscyStudenci[licznikStudentow].getImie() == "");
+        if (typ == 1) {
+            Student* nowyStudent = new Student(); 
+            do{
+                cout << "Wpisz index: ";
+                cin >> tymczasowyIndex;
+                nowyStudent->setIndex(tymczasowyIndex);
+            }
+            while (nowyStudent->getIndex() == -1);
 
-        do{
-            cout << "Wpisz nazwisko: ";
-            cin >> tymczasoweNazwisko;
-            wszyscyStudenci[licznikStudentow].setNazwisko(tymczasoweNazwisko);
+            do{
+                cout << "Wpisz imie: ";
+                cin >> tymczasoweImie;
+                nowyStudent->setImie(tymczasoweImie);
+            }
+            while (nowyStudent->getImie() == "");
+
+            do{
+                cout << "Wpisz nazwisko: ";
+                cin >> tymczasoweNazwisko;
+                nowyStudent->setNazwisko(tymczasoweNazwisko);
+            }
+            while (nowyStudent->getNazwisko() == "");
+            listaAktywna->dodajOsobe(nowyStudent); 
         }
-        while (wszyscyStudenci[licznikStudentow].getNazwisko() == "");
-        
-        listaAktywna->dodajOsobe(&wszyscyStudenci[licznikStudentow]);
-        licznikStudentow++;
+        else if (typ == 2){
+            Pracownik* nowyPracownik = new Pracownik(); 
+            do{
+                cout << "Wpisz imie: ";
+                cin >> tymczasoweImie;
+                nowyPracownik->setImie(tymczasoweImie);
+            }
+            while (nowyPracownik->getImie() == "");
+
+            do{
+                cout << "Wpisz nazwisko: ";
+                cin >> tymczasoweNazwisko;
+                nowyPracownik->setNazwisko(tymczasoweNazwisko);
+            }
+            while (nowyPracownik->getNazwisko() == "");
+            listaAktywna->dodajOsobe(nowyPracownik);
+        }
+        else 
+            cout << "Nieznany wybor!" << endl;
 }
 
-void ListaObecnosci::dodajOsobe(Student *nowyStudent){
+void ListaObecnosci::dodajOsobe(Osoba *nowaOsoba){
     if (licznik < N){
-        baza[licznik] = nowyStudent;
+        baza[licznik] = nowaOsoba;
         obecnosc[licznik] = 0;       
         licznik++;                   
     }
@@ -133,7 +179,11 @@ void ListaObecnosci::ustawObecnosc(){
     bool tymczasowaObecnosc;
     if (licznik != 0){
         for (int i = 0; i < licznik; i++){
-            cout << "Ustaw obecnosc dla " << setfill('0') << setw(6) << baza[i]->getIndex() << " " << baza[i]->getImie() << " " << baza[i]->getNazwisko() << ": ";
+            Student* potencjalnyStudent = dynamic_cast<Student*>(baza[i]);
+            if (potencjalnyStudent != nullptr)
+                cout << "Ustaw obecnosc dla " << setfill('0') << setw(6) << potencjalnyStudent->getIndex() << " " << baza[i]->getImie() << " " << baza[i]->getNazwisko() << ": ";
+            else
+                cout << "Ustaw obecnosc dla " << "------" << baza[i]->getImie() << " " << baza[i]->getNazwisko() << ": ";
             cin >> tymczasowaObecnosc;
             obecnosc[i] = tymczasowaObecnosc;
         }
@@ -143,26 +193,28 @@ void ListaObecnosci::ustawObecnosc(){
 }
 
 void ListaObecnosci::zmienDane(){
-    int index, licznik1 = -1, tymczasowyIndex = -1;
-    string tymczasoweImie, tymczasoweNazwisko;
+    int licznik1 = -1, tymczasowyIndex = -1;
+    string tymczasoweImie, tymczasoweNazwisko, nazwisko;
 
     if (licznik != 0){
-        cout << "Wpisz index osoby dane ktorej chcesz zmienic: ";
-        cin >> index;
+        cout << "Wpisz nazwisko osoby dane ktorej chcesz zmienic: ";
+        cin >> nazwisko;
         for (int i = 0; i < licznik; i++){
-            if (index == baza[i]->getIndex()){
+            if (nazwisko == baza[i]->getNazwisko()){
                 licznik1 = i;
                 break;
             }
         }
         if (licznik1 != -1){
-
-            do{
-                cout << "Wpisz nowy index: ";
-                cin >> tymczasowyIndex;
-                baza[licznik1]->setIndex(tymczasowyIndex);
+            Student* potencjalnyStudent = dynamic_cast<Student*>(baza[licznik1]);
+            if (potencjalnyStudent != nullptr) {
+                do{
+                    cout << "Wpisz nowy index: ";
+                    cin >> tymczasowyIndex;
+                    potencjalnyStudent->setIndex(tymczasowyIndex);
+                }
+                while (potencjalnyStudent->getIndex() == -1);
             }
-            while (baza[licznik1]->getIndex() == -1);
             
             do{
                 cout << "Wpisz nowe imie: ";
@@ -186,29 +238,43 @@ void ListaObecnosci::zmienDane(){
 }
 
 void ListaObecnosci::drukujListe(){
-    if (licznik != 0)
-        for (int i = 0; i < licznik; i++)
-            cout << i + 1 << ". " << setfill('0') << setw(6) << baza[i]->getIndex() << " " << baza[i]->getImie() << " "  << baza[i]->getNazwisko() << " - " << (obecnosc[i] == 1 ? "obecny" : "nie obecny") << endl;
-    else
-        cout << "Lista jest pusta." << endl;
+        if (licznik != 0)
+            for (int i = 0; i < licznik; i++) {
+                Student* potencjalnyStudent = dynamic_cast<Student*>(baza[i]);
+                IPrzedstawialny* obiektPrzedstawialny = dynamic_cast<IPrzedstawialny*>(baza[i]);
+                cout << i + 1 << ". ";
+                if (potencjalnyStudent != nullptr) 
+                    cout << setfill('0') << setw(6) << potencjalnyStudent->getIndex() << " "; 
+                else
+                    cout << "------" << " "; 
+                if (obiektPrzedstawialny != nullptr)
+                    cout << obiektPrzedstawialny->przedstawSie() << " ";
+                else
+                    cout << baza[i]->getImie() << " "  << baza[i]->getNazwisko() << " ";
+                cout << "- " << (obecnosc[i] == 1 ? "obecny" : "nie obecny") << endl;
+            }
+        else
+            cout << "Lista jest pusta." << endl;  
 }
 
 void ListaObecnosci::usunOsobe(){
-    int index, licznik1 = -1;
+    int licznik1 = -1;
+    string nazwisko;
 
     if (licznik != 0){
-        cout << "Wpisz index osoby ktora chcesz usunac: ";
-        cin >> index;
+        cout << "Wpisz nazwisko osoby ktora chcesz usunac: ";
+        cin >> nazwisko;
         for (int i = 0; i < licznik; i++){
-            if (index == baza[i]->getIndex()){
+            if (nazwisko == baza[i]->getNazwisko()){
                 licznik1 = i;
                 break;
             }
         }
         if (licznik1 != -1){
+            delete baza[licznik1];
             for (int i = licznik1; i < licznik - 1; i++)
                 baza[i] = baza[i + 1];
-
+            
             for (int i = licznik1; i < licznik - 1; i++)
                 obecnosc[i] = obecnosc[i + 1];
 
@@ -265,7 +331,7 @@ int Interfejs::uruchom(){
 
         switch (wybor){
             case 1:
-                wprowadzNowegoStudenta();
+                wprowadzNowaOsobe();
                 break;
             case 2:
                 listaAktywna->ustawObecnosc();
